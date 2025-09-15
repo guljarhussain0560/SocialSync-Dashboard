@@ -3,6 +3,7 @@
 
 import React, { useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
+import { Calendar } from 'lucide-react';
 
 
 type CreatePostFormProps = {
@@ -22,6 +23,8 @@ const CreatePostForm = ({ open, onOpenChange }: CreatePostFormProps) => {
     const [postTitle, setPostTitle] = useState('');
     const [postContent, setPostContent] = useState('');
     const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>(['tayog']);
+    const [selectedDate, setSelectedDate] = useState<string>('');
+    const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
 
     const handlePlatformChange = (platformId: string) => {
         setSelectedPlatforms((prev) =>
@@ -34,23 +37,14 @@ const CreatePostForm = ({ open, onOpenChange }: CreatePostFormProps) => {
     return (
         <Dialog.Root open={open} onOpenChange={onOpenChange}>
             <Dialog.Portal>
-                {/* Overlay */}
-                <Dialog.Overlay
+                <Dialog.Overlay className="fixed inset-0 bg-black/50" />
+                <Dialog.Content className="fixed top-[50%] left-[50%] max-h-[90vh] w-[95%] sm:w-[500px] 
+                    translate-x-[-50%] translate-y-[-50%] rounded-xl overflow-auto
+                    bg-white text-gray-800 shadow-2xl focus:outline-none">
                     
-                    className="fixed inset-0 bg-black/50 radix-state-open:animate-fadeIn radix-state-closed:animate-fadeOut"
-                />
-
-
-                {/* Content */}
-                <Dialog.Content
-                    className="fixed top-[50%] left-[50%] max-h-[90vh] w-full max-w-2xl 
-                     translate-x-[-50%] translate-y-[-50%] rounded-xl 
-                     bg-white text-gray-800 shadow-2xl focus:outline-none 
-                     data-[state=open]:animate-slideIn"
-                >
                     {/* Header */}
-                    <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                        <Dialog.Title className="text-xl font-semibold">Create New Post</Dialog.Title>
+                    <div className="sticky top-0 z-10 bg-white flex items-center justify-between p-4 sm:p-6 border-b border-gray-200">
+                        <Dialog.Title className="text-lg sm:text-xl font-semibold">Create New Post</Dialog.Title>
                         <Dialog.Close asChild>
                             <button
                                 type="button"
@@ -72,7 +66,7 @@ const CreatePostForm = ({ open, onOpenChange }: CreatePostFormProps) => {
                     </div>
 
                     {/* Form */}
-                    <form className="p-6 space-y-6">
+                    <form className="p-4 sm:p-6 space-y-4 sm:space-y-6">
                         {/* Title */}
                         <div>
                             <label htmlFor="postTitle" className="block text-sm font-medium text-gray-700 mb-1">
@@ -84,7 +78,7 @@ const CreatePostForm = ({ open, onOpenChange }: CreatePostFormProps) => {
                                 value={postTitle}
                                 onChange={(e) => setPostTitle(e.target.value)}
                                 placeholder="Enter post title"
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md 
+                                className="w-full px-3 py-2 rounded-md bg-gray-50
                            focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                         </div>
@@ -100,16 +94,16 @@ const CreatePostForm = ({ open, onOpenChange }: CreatePostFormProps) => {
                                 value={postContent}
                                 onChange={(e) => setPostContent(e.target.value)}
                                 placeholder="Write your update or opportunity..."
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md 
+                                className="w-full px-3 py-2 bg-gray-50 rounded-md 
                            focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                         </div>
 
-                        {/* Upload */}
+                        {/* Upload - adjusted for mobile */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Upload Media</label>
-                            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 
-                              border-dashed rounded-md cursor-pointer hover:border-blue-500">
+                            <div className="mt-1 flex justify-center p-4 sm:px-6 sm:pt-5 sm:pb-6 border-2 border-gray-300 
+                                border-dashed rounded-md cursor-pointer hover:border-blue-500">
                                 <div className="space-y-1 text-center">
                                     <svg
                                         className="mx-auto h-12 w-12 text-gray-400"
@@ -129,20 +123,33 @@ const CreatePostForm = ({ open, onOpenChange }: CreatePostFormProps) => {
                                         />
                                     </svg>
                                     <div className="flex text-sm text-gray-600">
-                                        <p className="pl-1">
-                                            Drag files here or{' '}
-                                            <span className="font-medium text-blue-600">click to browse</span>
-                                        </p>
+                                        <label
+                                            htmlFor="file-upload"
+                                            className="cursor-pointer pl-1 font-medium text-blue-600"
+                                        >
+                                            Drag files here or click to browse
+                                            <input
+                                                id="file-upload"
+                                                type="file"
+                                                className="sr-only"
+                                                title="Upload your file"
+                                                onChange={(e) => {
+                                                    if (e.target.files && e.target.files.length > 0) {
+                                                        alert(`Selected file: ${e.target.files[0].name}`);
+                                                    }
+                                                }}
+                                            />
+                                        </label>
                                     </div>
                                     <p className="text-xs text-gray-500">Supports images, videos, and PDFs</p>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Platforms */}
+                        {/* Platforms - adjusted grid */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">Select Platforms</label>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 gap-3">
                                 {platforms.map((platform) => (
                                     <div key={platform.id} className="flex items-center">
                                         <input
@@ -164,56 +171,55 @@ const CreatePostForm = ({ open, onOpenChange }: CreatePostFormProps) => {
                             </div>
                         </div>
 
-                        {/* Schedule */}
+                        {/* Schedule - adjusted for mobile */}
                         <div>
-                            <label htmlFor="schedule" className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
                                 Schedule Post (Optional)
                             </label>
                             <div className="relative">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth={1.5}
-                                        stroke="currentColor"
-                                        className="w-5 h-5 text-gray-400"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M6.75 3v2.25M17.25 3v2.25M3 
-                         18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 
-                         2.25 0 0121 7.5v11.25m-18 
-                         0A2.25 2.25 0 005.25 21h13.5A2.25 
-                         2.25 0 0021 18.75m-18 0h18"
-                                        />
-                                    </svg>
+                                <div
+                                    className="flex items-center w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg cursor-pointer"
+                                    onClick={() => setIsDatePickerOpen((prev) => !prev)}
+                                >
+                                    <Calendar className="h-5 w-5 text-gray-400 mr-2" />
+                                    <span className="text-gray-500">
+                                        {selectedDate || 'Pick a date'}
+                                    </span>
                                 </div>
-                                <input
-                                    type="text"
-                                    id="schedule"
-                                    placeholder="Pick a date"
-                                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md 
-                             focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
+                                {isDatePickerOpen && (
+                                    <div className="absolute top-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+                                        <input
+                                            type="date"
+                                            title="Select a date"
+                                            className="w-full px-4 py-2 border-none focus:outline-none"
+                                            value={selectedDate}
+                                            onChange={(e) => {
+                                                setSelectedDate(e.target.value);
+                                                setIsDatePickerOpen(false);
+                                            }}
+                                        />
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </form>
 
-                    {/* Footer */}
-                    <div className="flex items-center justify-end p-6 border-t border-gray-200 space-x-3">
+                    {/* Footer - adjusted for mobile */}
+                    <div className="sticky bottom-0 z-10 bg-white flex flex-col-reverse sm:flex-row items-center justify-center gap-3 sm:gap-4 p-4 sm:p-6 border-t border-gray-200">
                         <button
                             type="button"
-                            className="px-6 py-2.5 text-sm font-semibold text-gray-700 
-                         bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+                            className="w-full sm:w-auto px-8 sm:px-16 py-2.5 text-sm font-semibold text-gray-700 
+                                bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
                         >
                             Save as Draft
                         </button>
                         <button
                             type="submit"
-                            className="px-6 py-2.5 text-sm font-semibold text-white 
-                         bg-blue-600 rounded-lg hover:bg-blue-700"
+                            disabled={!postTitle || !postContent || selectedPlatforms.length === 0}
+                            className={`w-full sm:w-auto px-8 sm:px-16 py-2.5 text-sm font-semibold text-white rounded-lg 
+                                ${!postTitle || !postContent || selectedPlatforms.length === 0
+                                    ? 'bg-blue-300 cursor-not-allowed'
+                                    : 'bg-blue-600 hover:bg-blue-700 cursor-pointer'}`}
                         >
                             Publish Now
                         </button>

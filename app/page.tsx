@@ -7,7 +7,7 @@ export default function Home() {
   return (
     // 1. This is the main container for the entire page.
     // It sets the background color and overall padding.
-    <main className="min-h-screen bg-white p-4 sm:p-6 md:p-8">
+    <main className="min-h-screen bg-gray-50 p-4 sm:p-6 md:p-8">
 
       {/* 2. The Navbar component sits at the very top. */}
       <Navbar />

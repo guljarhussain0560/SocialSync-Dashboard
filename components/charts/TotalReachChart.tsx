@@ -13,7 +13,7 @@ const data = [
 
 export function TotalReachChart() {
   return (
-    <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
+    <div className="bg-white p-6 rounded-xl border border-gray-200">
       <h3 className="font-semibold text-gray-800">Total Reach</h3>
       <div className="h-72 mt-4">
         <ResponsiveContainer width="100%" height="100%">

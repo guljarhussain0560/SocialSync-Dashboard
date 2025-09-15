@@ -5,7 +5,7 @@ import { PostPerformanceTable } from './PostPerformanceTable';
 
 export function AnalyticsDashboard() {
   return (
-    <div className="bg-gray-100 p-4 sm:p-6 md:p-8 rounded-xl shadow-sm mx-auto max-w-400">
+    <div className="bg-white p-6 sm:p-8 rounded-xl border border-white max-w-[1500px] mx-auto">
       {/* Top Section: Analytics Overview */}
       <div className="space-y-2">
           <h2 className="text-xl font-bold text-gray-900">Analytics Overview</h2>

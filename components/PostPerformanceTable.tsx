@@ -10,7 +10,7 @@ const posts = [
 
 export function PostPerformanceTable() {
   return (
-    <div className="bg-gray-50 p-6 sm:p-8 rounded-2xl border border-gray-200 w-full">
+    <div className="bg-white p-6 sm:p-8 rounded-2xl border border-gray-200 w-full">
       <h2 className="text-2xl font-semibold text-black">Post Performance</h2>
 
       <div className="mt-6 overflow-x-auto">
