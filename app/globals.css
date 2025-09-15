@@ -1,0 +1,41 @@
+/* Correct Tailwind CSS v4 import */
+@import "tailwindcss";
+
+/* --- Variable Definitions --- */
+
+:root {
+  /* Base semantic tokens (independent of actual colors) */
+  --background: var(--background, transparent); /* fallback transparent */
+  --foreground: var(--foreground, inherit);     /* fallback inherit */
+  --accent: var(--accent, #3b82f6);             /* fallback blue */
+  --border: var(--border, #e5e7eb);             /* fallback gray-200 */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Override only if needed */
+    --background: #ffffff;
+    --foreground: #ffffff;
+    --accent: #2563eb; /* slightly darker blue */
+    --border: #374151; /* gray-700 */
+  }
+}
+
+/* --- Tailwind v4 Theme Configuration --- */
+:root {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-border: var(--border);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* --- Base Body Styles --- */
+body {
+  /* Do not hard-set bg/fg — let utilities decide */
+  background-color: var(--color-background, transparent);
+  color: var(--color-foreground, inherit);
+  font-family: var(--font-sans, Arial, Helvetica, sans-serif);
+}
