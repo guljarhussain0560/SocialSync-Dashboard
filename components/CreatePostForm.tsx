@@ -38,7 +38,7 @@ const CreatePostForm = ({ open, onOpenChange }: CreatePostFormProps) => {
         <Dialog.Root open={open} onOpenChange={onOpenChange}>
             <Dialog.Portal>
                 <Dialog.Overlay className="fixed inset-0 bg-black/50" />
-                <Dialog.Content className="fixed top-[50%] left-[50%] max-h-[90vh] w-[95%] sm:w-[500px] 
+                <Dialog.Content className="fixed top-[50%] left-[50%] max-h-[97vh] w-[97%] sm:w-[500px] 
                     translate-x-[-50%] translate-y-[-50%] rounded-xl overflow-auto
                     bg-white text-gray-800 shadow-2xl focus:outline-none">
                     
@@ -146,24 +146,27 @@ const CreatePostForm = ({ open, onOpenChange }: CreatePostFormProps) => {
                             </div>
                         </div>
 
-                        {/* Platforms - adjusted grid */}
+                        {/* Platforms - modern design */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Select Platforms</label>
-                            <div className="grid grid-cols-1 gap-3">
+                            <label className="block text-sm font-medium text-gray-700 mb-3">Select Platforms</label>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 {platforms.map((platform) => (
-                                    <div key={platform.id} className="flex items-center">
+                                    <div 
+                                        key={platform.id} 
+                                        className="flex items-center p-3 bg-white rounded-lg border border-gray-200 hover:border-gray-300 transition-colors duration-200"
+                                    >
                                         <input
                                             id={platform.id}
                                             type="checkbox"
                                             checked={selectedPlatforms.includes(platform.id)}
                                             onChange={() => handlePlatformChange(platform.id)}
-                                            className="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 border-gray-300"
+                                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded focus:ring-2 focus:ring-offset-2"
                                         />
                                         <label
                                             htmlFor={platform.id}
-                                            className="ml-3 flex items-center text-sm font-medium text-gray-700 cursor-pointer"
+                                            className="ml-3 flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer flex-grow"
                                         >
-                                            <span className={`w-4 h-4 rounded-sm mr-2 ${platform.color}`}></span>
+                                            <span className={`w-4 h-4 rounded ${platform.color}`}></span>
                                             {platform.name}
                                         </label>
                                     </div>
@@ -178,16 +181,16 @@ const CreatePostForm = ({ open, onOpenChange }: CreatePostFormProps) => {
                             </label>
                             <div className="relative">
                                 <div
-                                    className="flex items-center w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg cursor-pointer"
+                                    className="flex items-center gap-2 w-full rounded-lg bg-white border border-gray-200 px-3 py-2 cursor-pointer"
                                     onClick={() => setIsDatePickerOpen((prev) => !prev)}
                                 >
-                                    <Calendar className="h-5 w-5 text-gray-400 mr-2" />
+                                    <Calendar className="h-5 w-5 text-gray-500" />
                                     <span className="text-gray-500">
-                                        {selectedDate || 'Pick a date'}
+                                        Pick a date
                                     </span>
                                 </div>
                                 {isDatePickerOpen && (
-                                    <div className="absolute top-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+                                    <div className="absolute top-full bg-white border border-gray-200 rounded-lg shadow-lg z-10">
                                         <input
                                             type="date"
                                             title="Select a date"
@@ -204,25 +207,31 @@ const CreatePostForm = ({ open, onOpenChange }: CreatePostFormProps) => {
                         </div>
                     </form>
 
-                    {/* Footer - adjusted for mobile */}
-                    <div className="sticky bottom-0 z-10 bg-white flex flex-col-reverse sm:flex-row items-center justify-center gap-3 sm:gap-4 p-4 sm:p-6 border-t border-gray-200">
-                        <button
-                            type="button"
-                            className="w-full sm:w-auto px-8 sm:px-16 py-2.5 text-sm font-semibold text-gray-700 
-                                bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
-                        >
-                            Save as Draft
-                        </button>
-                        <button
-                            type="submit"
-                            disabled={!postTitle || !postContent || selectedPlatforms.length === 0}
-                            className={`w-full sm:w-auto px-8 sm:px-16 py-2.5 text-sm font-semibold text-white rounded-lg 
-                                ${!postTitle || !postContent || selectedPlatforms.length === 0
-                                    ? 'bg-blue-300 cursor-not-allowed'
-                                    : 'bg-blue-600 hover:bg-blue-700 cursor-pointer'}`}
-                        >
-                            Publish Now
-                        </button>
+                    {/* Footer - optimized for both mobile and desktop */}
+                    <div className="sticky bottom-0 z-10 ">
+                        <div className="max-w-md mx-auto px-4 py-4 sm:px-6 sm:py-6">
+                            <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3">
+                                <button
+                                    type="button"
+                                    className="w-full sm:w-[160px] py-2.5 text-sm font-semibold text-gray-700 
+                                        bg-white border border-gray-300 rounded-lg hover:bg-gray-50 
+                                        transition-colors duration-200"
+                                >
+                                    Save as Draft
+                                </button>
+                                <button
+                                    type="submit"
+                                    disabled={!postTitle || !postContent || selectedPlatforms.length === 0}
+                                    className={`w-full sm:w-[160px] py-2.5 px-8 text-sm font-semibold text-white rounded-lg 
+                                        transition-colors duration-200
+                                        ${!postTitle || !postContent || selectedPlatforms.length === 0
+                                        ? 'bg-blue-300 cursor-not-allowed'
+                                        : 'bg-blue-600 hover:bg-blue-700 cursor-pointer'}`}
+                                >
+                                    Publish Now
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </Dialog.Content>
             </Dialog.Portal>

@@ -11,6 +11,24 @@ const data = [
   { name: 'Sep 15', reach: 1820 },
 ];
 
+type TooltipProps = {
+  active?: boolean;
+  payload?: Array<{
+    value: number;
+  }>;
+};
+
+const CustomTooltip = ({ active, payload }: TooltipProps) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="text-xs font-medium text-gray-900">
+        {`${payload[0].value.toLocaleString()}`}
+      </div>
+    );
+  }
+  return null;
+};
+
 export function TotalReachChart() {
   return (
     <div className="bg-white p-6 rounded-xl border border-gray-200">
@@ -21,7 +39,7 @@ export function TotalReachChart() {
             <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
             <XAxis dataKey="name" stroke="#6b7280" fontSize={12} />
             <YAxis stroke="#6b7280" fontSize={12} />
-            <Tooltip />
+            <Tooltip content={<CustomTooltip />} cursor={false} />
             <Line type="monotone" dataKey="reach" stroke="#3b82f6" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 6 }} />
           </LineChart>
         </ResponsiveContainer>
