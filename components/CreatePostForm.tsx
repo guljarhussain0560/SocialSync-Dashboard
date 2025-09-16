@@ -209,7 +209,7 @@ const CreatePostForm = ({ open, onOpenChange }: CreatePostFormProps) => {
                     </form>
 
                     {/* Footer - optimized for both mobile and desktop */}
-                    <div className="sticky bottom-0 z-10 ">
+                    <div className=" ">
                         <div className="max-w-md mx-auto px-4 py-4 sm:px-6 sm:py-6">
                             <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3">
                                 <button
