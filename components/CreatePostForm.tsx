@@ -180,21 +180,22 @@ const CreatePostForm = ({ open, onOpenChange }: CreatePostFormProps) => {
                                 Schedule Post (Optional)
                             </label>
                             <div className="relative">
-                                <div
-                                    className="flex items-center gap-2 w-full rounded-lg bg-white border border-gray-200 px-3 py-2 cursor-pointer"
+                                <button
+                                    type="button"
+                                    className="flex items-center gap-2 w-full rounded-lg bg-white border border-gray-200 px-3 py-2 cursor-pointer focus:outline-none sm:px-4 sm:py-3"
                                     onClick={() => setIsDatePickerOpen((prev) => !prev)}
                                 >
-                                    <Calendar className="h-5 w-5 text-gray-500" />
-                                    <span className="text-gray-500">
-                                        Pick a date
+                                    <Calendar className="h-5 w-5 text-gray-500 sm:h-6 sm:w-6" />
+                                    <span className="text-gray-500 text-sm sm:text-base">
+                                        {selectedDate ? new Date(selectedDate).toLocaleDateString() : 'Pick a date'}
                                     </span>
-                                </div>
+                                </button>
                                 {isDatePickerOpen && (
-                                    <div className="absolute top-full bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+                                    <div className="absolute top-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
                                         <input
                                             type="date"
                                             title="Select a date"
-                                            className="w-full px-4 py-2 border-none focus:outline-none"
+                                            className="w-full px-4 py-2 border-none focus:outline-none text-sm sm:text-base"
                                             value={selectedDate}
                                             onChange={(e) => {
                                                 setSelectedDate(e.target.value);
