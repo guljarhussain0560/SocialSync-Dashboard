@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String    @id @default(cuid())
+  name     String?
+  email    String    @unique
+  password String
+  accounts Account[]
+  posts    Post[]
+}
+
+model Account {
+  id          String    @id @default(cuid())
+  userId      String
+  provider    Providers @unique @default(TAYOG)
+  isConnected Boolean   @default(false)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Post {
+  id        String     @id @default(cuid())
+  userId    String
+  title     String
+  content   String
+  status    String
+  platforms String[]
+  createdAt DateTime   @default(now())
+  analytics Analytics?
+  user      User       @relation(fields: [userId], references: [id])
+}
+
+model Analytics {
+  id       String @id @default(cuid())
+  postId   String @unique
+  reach    Int    @default(0)
+  likes    Int    @default(0)
+  comments Int    @default(0)
+  shares   Int    @default(0)
+  post     Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+enum Providers {
+  FACEBOOK
+  TAYOG
+  X
+  LINKEDIN
+  INSTAGRAM
+}

@@ -1,15 +1,50 @@
 'use client';
+import { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-const data = [
-  { name: 'LinkedIn', reach: 1020 },
-  { name: 'Twitter/X', reach: 850 },
-  { name: 'Instagram', reach: 680 },
-  { name: 'Facebook', reach: 450 },
-  { name: 'Tayog', reach: 910 },
-];
+const platformDisplayNames: Record<string, string> = {
+  linkedin: 'LinkedIn',
+  'twitter/x': 'Twitter/X',
+  instagram: 'Instagram',
+  facebook: 'Facebook',
+  tayog: 'Tayog',
+};
 
 export function TopPlatformsChart() {
+  const [data, setData] = useState<{ name: string; reach: number }[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAnalytics = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch('/api/posts/analytics');
+        if (!res.ok) throw new Error('Failed to fetch analytics');
+        const posts = await res.json();
+        // Aggregate reach by platform
+        const reachByPlatform: Record<string, number> = {};
+        for (const post of posts) {
+          if (Array.isArray(post.platforms)) {
+            for (const platform of post.platforms) {
+              const key = platform.toLowerCase();
+              reachByPlatform[key] = (reachByPlatform[key] || 0) + (post.analytics?.reach || 0);
+            }
+          }
+        }
+        const chartData = Object.entries(reachByPlatform).map(([key, reach]) => ({
+          name: platformDisplayNames[key] || key,
+          reach,
+        }));
+        setData(chartData);
+      } catch {
+        setData([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAnalytics();
+  }, []);
+
   return (
     <div className="bg-white p-6 rounded-xl border border-gray-200">
       <h3 className="font-semibold text-gray-800">Top Performing Platforms</h3>
@@ -23,6 +58,8 @@ export function TopPlatformsChart() {
             <Bar dataKey="reach" fill="#3b82f6" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
+        {loading && <div className="text-gray-500 text-center mt-4">Loading...</div>}
+        {!loading && data.length === 0 && <div className="text-gray-500 text-center mt-4">No data found.</div>}
       </div>
     </div>
   );

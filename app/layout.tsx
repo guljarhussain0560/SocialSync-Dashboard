@@ -1,6 +1,14 @@
+//
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import AuthProvider from "@/components/AuthProvider"; 
+import { Toaster } from "react-hot-toast";
+
+// These logs will appear in your server terminal
+console.log('--- Reading app/layout.tsx file ---');
+console.log('Type of imported AuthProvider:', typeof AuthProvider);
+console.log('Value of imported AuthProvider:', AuthProvider);
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,12 +30,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  console.log('--- Rendering RootLayout component ---');
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <AuthProvider>
+          <Toaster position="top-center" />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

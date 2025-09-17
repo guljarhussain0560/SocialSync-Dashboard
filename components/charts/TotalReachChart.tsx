@@ -1,15 +1,12 @@
 'use client';
+import { useEffect, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-const data = [
-  { name: 'Sep 9', reach: 890 },
-  { name: 'Sep 10', reach: 1050 },
-  { name: 'Sep 11', reach: 1200 },
-  { name: 'Sep 12', reach: 1350 },
-  { name: 'Sep 13', reach: 1280 },
-  { name: 'Sep 14', reach: 1550 },
-  { name: 'Sep 15', reach: 1820 },
-];
+// Helper to format date as 'MMM D'
+function formatDate(dateString: string) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+}
 
 type TooltipProps = {
   active?: boolean;
@@ -30,6 +27,35 @@ const CustomTooltip = ({ active, payload }: TooltipProps) => {
 };
 
 export function TotalReachChart() {
+  const [data, setData] = useState<{ name: string; reach: number }[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAnalytics = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch('/api/posts/analytics');
+        if (!res.ok) throw new Error('Failed to fetch analytics');
+        const posts = await res.json();
+        // Aggregate reach by date
+        const reachByDate: Record<string, number> = {};
+        for (const post of posts) {
+          const dateKey = formatDate(post.createdAt);
+          reachByDate[dateKey] = (reachByDate[dateKey] || 0) + (post.analytics?.reach || 0);
+        }
+        // Sort by date (as string)
+        const chartData = Object.entries(reachByDate)
+          .map(([name, reach]) => ({ name, reach }));
+        setData(chartData);
+      } catch {
+        setData([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAnalytics();
+  }, []);
+
   return (
     <div className="bg-white p-6 rounded-xl border border-gray-200">
       <h3 className="font-semibold text-gray-800">Total Reach</h3>
@@ -43,6 +69,8 @@ export function TotalReachChart() {
             <Line type="monotone" dataKey="reach" stroke="#3b82f6" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 6 }} />
           </LineChart>
         </ResponsiveContainer>
+        {loading && <div className="text-gray-500 text-center mt-4">Loading...</div>}
+        {!loading && data.length === 0 && <div className="text-gray-500 text-center mt-4">No data found.</div>}
       </div>
     </div>
   );

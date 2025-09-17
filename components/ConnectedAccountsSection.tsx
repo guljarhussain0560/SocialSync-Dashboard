@@ -1,50 +1,54 @@
 'use client';
-
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AccountCard, { type SocialAccount } from './AccountCard';
-// Import the new brand icons
 import { LinkedInIcon, TwitterXIcon, InstagramIcon, FacebookIcon } from './icons';
 
-// Updated data using the new brand icon components
-const initialAccounts: SocialAccount[] = [
-  {
-    id: 'linkedin',
-    name: 'LinkedIn',
-    icon: <LinkedInIcon />,
-    isConnected: false,
-  },
-  {
-    id: 'twitter',
-    name: 'Twitter/X',
-    icon: <TwitterXIcon />,
-    isConnected: true,
-  },
-  {
-    id: 'instagram',
-    name: 'Instagram',
-    icon: <InstagramIcon />,
-    isConnected: false,
-  },
-  {
-    id: 'facebook',
-    name: 'Facebook',
-    icon: <FacebookIcon />,
-    isConnected: true,
-  },
-];
+const providerIcons: Record<string, React.ReactNode> = {
+  LINKEDIN: <LinkedInIcon />,
+  TAYOG: <TwitterXIcon />,
+  INSTAGRAM: <InstagramIcon />,
+  FACEBOOK: <FacebookIcon />,
+  
+};
 
 const ConnectedAccountsSection = () => {
-  const [socialAccounts, setSocialAccounts] = useState(initialAccounts);
+  const [socialAccounts, setSocialAccounts] = useState<SocialAccount[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleToggleConnection = (accountId: string) => {
-    setSocialAccounts(prevAccounts =>
-      prevAccounts.map(account =>
-        account.id === accountId
-          ? { ...account, isConnected: !account.isConnected }
-          : account
-      )
+  // Fetch accounts from backend
+  useEffect(() => {
+    async function fetchAccounts() {
+      try {
+        const res = await fetch('/api/accounts');
+        const data = await res.json();
+
+        const mapped: SocialAccount[] = data.map((acc: any) => ({
+          id: acc.id,
+          provider: acc.provider,
+          name: acc.provider, // You can map prettier names here
+          icon: providerIcons[acc.provider.toUpperCase()] || <FacebookIcon />,
+          isConnected: acc.isConnected,
+        }));
+
+        setSocialAccounts(mapped);
+      } catch (err) {
+        console.error('Failed to fetch accounts:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchAccounts();
+  }, []);
+
+  // Called by AccountCard after toggling
+  const handleToggleConnection = (id: string, isConnected: boolean) => {
+    setSocialAccounts(prev =>
+      prev.map(acc => (acc.id === id ? { ...acc, isConnected } : acc))
     );
   };
+
+  if (loading) return <p>Loading accounts...</p>;
 
   return (
     <div className="bg-white p-6 sm:p-8 rounded-xl border border-gray-200 max-w-[1500px] mx-auto">
@@ -60,9 +64,9 @@ const ConnectedAccountsSection = () => {
       <div className="mt-6 mb-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         {socialAccounts.map(account => (
           <AccountCard
-        key={account.id}
-        account={account}
-        onToggleConnection={handleToggleConnection}
+            key={account.id}
+            account={account}
+            onToggleConnection={handleToggleConnection}
           />
         ))}
       </div>
