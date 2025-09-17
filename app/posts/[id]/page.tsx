@@ -50,9 +50,9 @@ export default function PostDetailsPage() {
         setAnalytics(
           postData.analytics ?? { id: '', reach: 0, likes: 0, comments: 0, shares: 0 }
         );
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error(err);
-        setError(err.message || 'Something went wrong');
+        setError(err instanceof Error ? err.message : 'Something went wrong');
         setPost(null);
         setAnalytics({ id: '', reach: 0, likes: 0, comments: 0, shares: 0 });
       } finally {
