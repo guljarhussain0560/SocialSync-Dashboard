@@ -1,0 +1,19 @@
+# Ignore node dependencies
+node_modules
+
+# Ignore build output
+.next
+out
+
+# Ignore TypeScript build output
+dist
+
+# Ignore environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Ignore logs
+*.log
