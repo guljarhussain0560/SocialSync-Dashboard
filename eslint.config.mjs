@@ -20,6 +20,7 @@ const eslintConfig = [
       "out/**",
       "build/**",
       "next-env.d.ts",
+      "app/generated/**", // 🚀 Ignore Prisma generated files
     ],
   },
   {
@@ -27,7 +28,7 @@ const eslintConfig = [
     languageOptions: {
       parser: tsParser,
       parserOptions: {
-        project: "./tsconfig.json", // enable type-aware linting
+        project: "./tsconfig.json",
         tsconfigRootDir: __dirname,
       },
     },
@@ -35,9 +36,10 @@ const eslintConfig = [
       "@typescript-eslint": tsPlugin,
     },
     rules: {
-      // Keep only useful checks, not strict
+      // Non-strict rules
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/explicit-function-return-type": "off",
+      "@typescript-eslint/no-require-imports": "off", // 🚀 allow require()
       "@typescript-eslint/no-unused-vars": [
         "warn",
         { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
