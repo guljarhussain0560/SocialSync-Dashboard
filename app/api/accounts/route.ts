@@ -1,9 +1,10 @@
+// app/api/accounts/route.ts
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/auth';
 
-async function getUserId(request: Request) {
+async function getUserId() {
   const session = await getServerSession(authOptions);
   if (!session || !session.user || !session.user.id) {
     throw new Error('Unauthorized: No user session found');
@@ -11,9 +12,10 @@ async function getUserId(request: Request) {
   return session.user.id;
 }
 
-export async function GET(request: Request) {
+// GET /api/accounts
+export async function GET() {
   try {
-    const userId = await getUserId(request);
+    const userId = await getUserId();
     const accounts = await prisma.account.findMany({
       where: { userId },
     });
@@ -24,13 +26,13 @@ export async function GET(request: Request) {
   }
 }
 
+// PUT /api/accounts
 export async function PUT(request: Request) {
   try {
-    const userId = await getUserId(request);
+    const userId = await getUserId();
     const body = await request.json();
     const { provider } = body;
 
-    // Find the account
     const account = await prisma.account.findFirst({
       where: { userId, provider },
     });
@@ -39,7 +41,6 @@ export async function PUT(request: Request) {
       return new NextResponse(JSON.stringify({ message: 'Account not found' }), { status: 404 });
     }
 
-    // Toggle the isConnected status
     const updatedAccount = await prisma.account.update({
       where: { id: account.id },
       data: { isConnected: !account.isConnected },

@@ -5,18 +5,14 @@ import bcrypt from "bcrypt";
 
 export const GET = async (req: NextRequest) => {
   try {
-    const body = await req.json();
-    const { email } = body;
+    const email = req.nextUrl.searchParams.get("email");
+    if (!email) return NextResponse.json({ message: "Missing email" }, { status: 400 });
 
-    const user = await prisma.user.findFirst({
-      where: {
-        email,
-      },
-    });
-    return NextResponse.json(user?.name);
+    const user = await prisma.user.findFirst({ where: { email } });
+    return NextResponse.json(user);
   } catch (error) {
-    console.error("Error in GET handler:", error);
-    return NextResponse.json({ error: "Failed to fetch user" }, { status: 500 });
+    console.error("Error in GET /api/users:", error);
+    return NextResponse.json({ message: "Failed" }, { status: 500 });
   }
 };
 

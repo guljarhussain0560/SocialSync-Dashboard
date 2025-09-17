@@ -6,9 +6,9 @@ const COLORS = ['#3b82f6', '#10b981', '#f97316']; // Likes, Comments, Shares
 
 export function EngagementDonutChart() {
   const [data, setData] = useState([
-    { name: 'Likes', value: 10 },
-    { name: 'Comments', value: 20 },
-    { name: 'Shares', value: 30 },
+    { name: 'Likes', value: 0 },
+    { name: 'Comments', value: 0 },
+    { name: 'Shares', value: 0 },
   ]);
   const [loading, setLoading] = useState(true);
 

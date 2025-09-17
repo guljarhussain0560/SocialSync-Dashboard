@@ -1,113 +1,112 @@
-import { NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/auth';
+// app/api/posts/[id]/route.ts
 
-// Helper function to validate session and get user ID
+import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/auth";
+
+// Helper to get logged-in user ID
 async function getUserId() {
   const session = await getServerSession(authOptions);
-  console.log('Session:', session); // Debugging line
-  if (!session || !session.user || !session.user.id) {
-    throw new Error('Unauthorized: No user session found');
+  if (!session || !session.user || !("id" in session.user)) {
+    throw new Error("Unauthorized: No user session found");
   }
-  return session.user.id;
+  return (session.user as { id: string }).id;
 }
 
+// GET post + analytics
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> } // ✅ params is a promise
 ) {
   try {
+    const { id } = await context.params; // ✅ await params
     const user_id = await getUserId();
-    const postId = params.id;
+
     const post = await prisma.post.findFirst({
-      where: {
-        id: postId,
-        userId: user_id, 
-      },
-      include: {
-        analytics: true,
-      },
+      where: { id, userId: user_id },
+      include: { analytics: true },
     });
 
     if (!post) {
-      return new NextResponse(JSON.stringify({ message: 'Post not found' }), { status: 404 });
+      return NextResponse.json({ message: "Post not found" }, { status: 404 });
     }
 
-    return NextResponse.json(post);
+    // Add analyticsId for convenience
+    const response = {
+      ...post,
+      analyticsId: post.analytics?.id || null,
+    };
+
+    return NextResponse.json(response);
   } catch (error) {
-    console.error(`Error fetching post ${params.id}:`, error);
-    return new NextResponse(JSON.stringify({ message: 'Failed to fetch post' }), { status: 500 });
+    console.error("Error fetching post:", error);
+    return NextResponse.json({ message: "Failed to fetch post" }, { status: 500 });
   }
 }
 
+// PUT update post
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await context.params;
     const user_id = await getUserId();
-    const postId = params.id;
 
-    // Security check: Make sure the post exists and belongs to the user before updating
     const post = await prisma.post.findFirst({
-      where: { id: postId, userId: user_id },
+      where: { id, userId: user_id },
     });
 
     if (!post) {
-      return new NextResponse(JSON.stringify({ message: 'Post not found or you do not have permission to edit it' }), { status: 404 });
+      return NextResponse.json(
+        { message: "Post not found or no permission" },
+        { status: 404 }
+      );
     }
 
     const body = await request.json();
     const { title, content, status, platforms } = body;
 
     const updatedPost = await prisma.post.update({
-      where: {
-        id: postId,
-      },
+      where: { id },
       data: {
-        title: title || post.title,
-        content: content || post.content,
-        status: status || post.status,
-        platforms: platforms || post.platforms,
+        title: title ?? post.title,
+        content: content ?? post.content,
+        status: status ?? post.status,
+        platforms: platforms ?? post.platforms,
       },
     });
 
     return NextResponse.json(updatedPost);
   } catch (error) {
-    console.error(`Error updating post ${params.id}:`, error);
-    return new NextResponse(JSON.stringify({ message: 'Failed to update post' }), { status: 500 });
+    console.error(`Error updating post:`, error);
+    return NextResponse.json({ message: "Failed to update post" }, { status: 500 });
   }
 }
 
+// DELETE post
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await context.params;
     const user_id = await getUserId();
-    const postId = params.id;
 
-    // Security check: Make sure the post exists and belongs to the user before deleting
     const post = await prisma.post.findFirst({
-      where: { id: postId, userId: user_id },
+      where: { id, userId: user_id },
     });
 
     if (!post) {
-      return new NextResponse(JSON.stringify({ message: 'Post not found' }), { status: 404 });
+      return NextResponse.json({ message: "Post not found" }, { status: 404 });
     }
 
-    // If the post exists and belongs to the user, delete it
-    await prisma.post.delete({
-      where: {
-        id: postId,
-      },
-    });
+    await prisma.post.delete({ where: { id } });
 
-    // Return a 204 No Content response, which is standard for a successful DELETE
     return new NextResponse(null, { status: 204 });
   } catch (error) {
-    console.error(`Error deleting post ${params.id}:`, error);
-    return new NextResponse(JSON.stringify({ message: 'Failed to delete post' }), { status: 500 });
+    console.error(`Error deleting post:`, error);
+    return NextResponse.json({ message: "Failed to delete post" }, { status: 500 });
   }
 }

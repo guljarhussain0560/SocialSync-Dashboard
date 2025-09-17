@@ -1,3 +1,4 @@
+// app/api/posts/route.ts
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
@@ -11,6 +12,11 @@ async function getUserId() {
     throw new Error('Unauthorized: No user session found');
   }
   return session.user.id;
+}
+
+// Random generator helper
+function getRandomInt(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 export async function POST(request: Request) {
@@ -27,7 +33,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Create the post along with an empty Analytics record
+    // Create post + analytics with random values
     const newPost = await prisma.post.create({
       data: {
         userId: user_id,
@@ -36,10 +42,15 @@ export async function POST(request: Request) {
         status: status || 'draft',
         platforms,
         analytics: {
-          create: {}, // Automatically creates Analytics with default values
+          create: {
+            reach: getRandomInt(1000, 100000),
+            likes: getRandomInt(100, 100000),
+            comments: getRandomInt(100, 100000),
+            shares: getRandomInt(100, 100000),
+          },
         },
       },
-      include: { analytics: true }, // Return analytics in the response
+      include: { analytics: true },
     });
 
     return NextResponse.json(newPost, { status: 201 });

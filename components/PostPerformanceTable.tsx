@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { ThumbsUp, MessageCircle, Upload, Eye } from 'lucide-react';
 
 // Backend post type
@@ -28,6 +29,7 @@ const platformStyles: Record<string, string> = {
 export function PostPerformanceTable() {
   const [posts, setPosts] = useState<BackendPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -104,9 +106,14 @@ export function PostPerformanceTable() {
                   <td className="px-4 py-3 text-center">{post.analytics?.comments ?? 0}</td>
                   <td className="px-4 py-3 text-center">{post.analytics?.shares ?? 0}</td>
                   <td className="px-4 py-3 text-left">
-                    <button type="button" className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-300 transition-colors">
+                    <button
+                      type="button"
+                      onClick={() => router.push(`/posts/${post.id}`)}
+                      className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
+                    >
                       View Details
                     </button>
+
                   </td>
                 </tr>
               ))

@@ -4,8 +4,8 @@ import { LinkIcon } from "./icons";
 import { Unlink, Link } from "lucide-react";
 
 export type SocialAccount = {
-  id: string; // Prisma ID
-  provider: string; // FACEBOOK, INSTAGRAM, etc.
+  id: string;          // Prisma ID
+  provider: string;    // FACEBOOK, INSTAGRAM, etc.
   name: string;
   icon: React.ReactNode;
   isConnected: boolean;
@@ -34,7 +34,7 @@ const AccountCard = ({ account, onToggleConnection }: AccountCardProps) => {
 
       const updatedAccount = await response.json();
 
-      // Update parent state
+      // Notify parent to update state
       onToggleConnection(updatedAccount.id, updatedAccount.isConnected);
     } catch (err) {
       console.error(err);

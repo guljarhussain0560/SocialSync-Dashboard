@@ -1,3 +1,4 @@
+// auth.ts
 import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import prisma from "@/lib/prisma";
@@ -50,8 +51,6 @@ export const authOptions: AuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        console.log('User in JWT callback:', user); // Debugging line
-        console.log('Token in JWT callback:', token); // Debugging line
         token.id = user.id; // attach id to JWT
       }
       return token;

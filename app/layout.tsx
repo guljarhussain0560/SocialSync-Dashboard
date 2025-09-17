@@ -1,14 +1,9 @@
-//
+//layout.tsx
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "@/components/AuthProvider"; 
 import { Toaster } from "react-hot-toast";
-
-// These logs will appear in your server terminal
-console.log('--- Reading app/layout.tsx file ---');
-console.log('Type of imported AuthProvider:', typeof AuthProvider);
-console.log('Value of imported AuthProvider:', AuthProvider);
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

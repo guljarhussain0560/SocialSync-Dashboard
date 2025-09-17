@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/auth';
 
 // Helper function to validate session and get user ID
-async function getUserId() {
+async function getUserId(req: Request) {
   const session = await getServerSession(authOptions);
   if (!session || !session.user || !session.user.id) {
     throw new Error('Unauthorized: No user session found');
@@ -12,9 +12,9 @@ async function getUserId() {
   return session.user.id;
 }
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
-    const userId = await getUserId();
+    const userId = await getUserId(req);
 
     // Fetch posts with analytics for the authenticated user
     const postsWithAnalytics = await prisma.post.findMany({
@@ -27,6 +27,9 @@ export async function GET() {
     return NextResponse.json(postsWithAnalytics);
   } catch (error) {
     console.error('Error fetching posts with analytics:', error);
-    return new NextResponse(JSON.stringify({ message: 'Failed to fetch data' }), { status: 500 });
+    return NextResponse.json(
+      { message: 'Failed to fetch data' },
+      { status: 500 }
+    );
   }
 }

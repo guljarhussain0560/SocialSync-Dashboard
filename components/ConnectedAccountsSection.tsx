@@ -1,13 +1,14 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import AccountCard, { type SocialAccount } from './AccountCard';
-import { LinkedInIcon, TwitterXIcon, InstagramIcon, FacebookIcon } from './icons';
+import { LinkedInIcon, TwitterXIcon, InstagramIcon, FacebookIcon,TayogIcon } from './icons';
 
 const providerIcons: Record<string, React.ReactNode> = {
   LINKEDIN: <LinkedInIcon />,
-  TAYOG: <TwitterXIcon />,
+  TAYOG: <TayogIcon />,
   INSTAGRAM: <InstagramIcon />,
   FACEBOOK: <FacebookIcon />,
+  X: <TwitterXIcon />,
   
 };
 

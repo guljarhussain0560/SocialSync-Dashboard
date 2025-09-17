@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import CreatePostForm from './CreatePostForm';
+import LogoutButton from './LogoutButton';
 
 const Navbar = () => {
   const [createPostOpen, setCreatePostOpen] = useState(false);
@@ -18,6 +19,8 @@ const Navbar = () => {
 
         {/* Right Section: Action Buttons */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
+
+          <LogoutButton />
           {/* Primary Button: Create Post */}
           <button 
             onClick={() => setCreatePostOpen(true)}
