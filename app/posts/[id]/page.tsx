@@ -77,11 +77,11 @@ export default function PostDetailsPage() {
       <div className="bg-white p-8 sm:p-10 rounded-xl border border-gray-200 shadow-sm">
         {/* Post Info */}
         <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-2">{post.title}</h1>
-        <p className="text-base sm:text-lg text-gray-700 mb-4">{post.content}</p>
+        <p className="text-base text-center sm:text-lg text-gray-700 mb-4 break-words">{post.content}</p>
         <div className="flex flex-wrap items-center gap-4 mb-6">
           <span className="inline-block text-xs font-semibold text-white bg-blue-500 rounded-full px-3 py-1">{post.status}</span>
           <span className="text-sm text-gray-500">
-            <span className="font-semibold text-gray-700">Platforms:</span> {post.platforms.join(', ')}
+            <span className="font-semibold text-gray-700">Platforms:  </span> {post.platforms.join(' , ')}
           </span>
         </div>
 

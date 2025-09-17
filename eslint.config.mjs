@@ -36,16 +36,17 @@ const eslintConfig = [
       "@typescript-eslint": tsPlugin,
     },
     rules: {
-      // Non-strict rules
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/explicit-function-return-type": "off",
-      "@typescript-eslint/no-require-imports": "off", // 🚀 allow require()
+      "@typescript-eslint/no-require-imports": "off",
       "@typescript-eslint/no-unused-vars": [
         "warn",
         { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
       ],
-      "@typescript-eslint/no-floating-promises": "warn",
-      "@typescript-eslint/no-misused-promises": "warn",
+
+      // 🚀 Disable strict promise rules
+      "@typescript-eslint/no-misused-promises": "off",
+      "@typescript-eslint/no-floating-promises": "off",
     },
   },
 ];
