@@ -23,7 +23,7 @@ const ConnectedAccountsSection = () => {
         const res = await fetch('/api/accounts');
         const data = await res.json();
 
-        const mapped: SocialAccount[] = data.map((acc: any) => ({
+        const mapped: SocialAccount[] = data.map((acc: SocialAccount) => ({
           id: acc.id,
           provider: acc.provider,
           name: acc.provider, // You can map prettier names here

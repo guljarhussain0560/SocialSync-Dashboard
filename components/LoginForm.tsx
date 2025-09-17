@@ -33,8 +33,9 @@ export const LoginForm = () => {
         router.push('/'); // Redirect to the main dashboard on success
         router.refresh(); // Refresh server components to update session
       }
-    } catch (error) {
-      toast.error('An unexpected error occurred. Please try again.');
+    } catch (error: unknown) {
+      console.error("Login error:", error);
+      toast.error('An unexpected error occurred. Please try again later.');
     } finally {
       setIsLoading(false); // Stop loading state regardless of outcome
     }

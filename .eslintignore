@@ -17,3 +17,6 @@ dist
 
 # Ignore logs
 *.log
+
+# Ignore generated Prisma files
+app/generated/prisma/
