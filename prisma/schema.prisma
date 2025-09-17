@@ -20,10 +20,13 @@ model User {
 model Account {
   id          String    @id @default(cuid())
   userId      String
-  provider    Providers @unique @default(TAYOG)
+  provider    Providers @default(TAYOG)
   isConnected Boolean   @default(false)
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, provider]) 
 }
+
 
 model Post {
   id        String     @id @default(cuid())

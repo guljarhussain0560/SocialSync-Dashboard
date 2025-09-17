@@ -20,7 +20,7 @@ const eslintConfig = [
       "out/**",
       "build/**",
       "next-env.d.ts",
-      "app/generated/**", // 🚀 Ignore Prisma generated files
+      "app/generated/**", 
     ],
   },
   {
@@ -43,8 +43,6 @@ const eslintConfig = [
         "warn",
         { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
       ],
-
-      // 🚀 Disable strict promise rules
       "@typescript-eslint/no-misused-promises": "off",
       "@typescript-eslint/no-floating-promises": "off",
     },

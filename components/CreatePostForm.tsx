@@ -69,40 +69,45 @@ const CreatePostForm = ({ open, onOpenChange }: CreatePostFormProps) => {
         );
     };
 
-    const handleSubmit = async (e: React.FormEvent, statusOverride: string = 'published') => {
-        e.preventDefault();
-        if (!postTitle || !postContent || selectedPlatforms.length === 0) return;
+const handleSubmit = async (e: React.FormEvent, statusOverride: string = 'published') => {
+    e.preventDefault();
+    if (!postTitle || !postContent || selectedPlatforms.length === 0) return;
 
-        try {
-            setIsLoading(true);
-            const backendPlatforms = selectedPlatforms.map(id => platformIdToEnum[id]);
-            const response = await fetch('/api/posts', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    title: postTitle,
-                    content: postContent,
-                    platforms: backendPlatforms,
-                    status: statusOverride,
-                    scheduledAt: selectedDate || null,
-                }),
-            });
+    try {
+        setIsLoading(true);
+        const backendPlatforms = selectedPlatforms.map(id => platformIdToEnum[id]);
+        const response = await fetch('/api/posts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                title: postTitle,
+                content: postContent,
+                platforms: backendPlatforms,
+                status: statusOverride,
+                scheduledAt: selectedDate || null,
+            }),
+        });
 
-            if (!response.ok) throw new Error('Failed to publish post');
-            const data = await response.json();
-            console.log('Post published successfully:', data);
+        if (!response.ok) throw new Error('Failed to publish post');
+        const data = await response.json();
+        console.log('Post published successfully:', data);
 
-            setPostTitle('');
-            setPostContent('');
-            setSelectedPlatforms([]);
-            setSelectedDate('');
-            onOpenChange(false);
-        } catch (err) {
-            console.error('Error publishing post:', err);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+        // Clear form
+        setPostTitle('');
+        setPostContent('');
+        setSelectedPlatforms([]);
+        setSelectedDate('');
+
+        // Close modal and refresh
+        onOpenChange(false);
+        setTimeout(() => window.location.reload(), 300); // Slight delay to allow modal to close
+    } catch (err) {
+        console.error('Error publishing post:', err);
+    } finally {
+        setIsLoading(false);
+    }
+};
+
 
     return (
         <Dialog open={open} onClose={() => onOpenChange(false)} fullWidth maxWidth="sm">
